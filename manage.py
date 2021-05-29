@@ -1,26 +1,10 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import CSRFProtect
-from redis import StrictRedis
-from flask_session import Session
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
+from info import create_app, db
 
-
-from information.config import Config
-
-app = Flask(__name__)
-# 加载配置
-app.config.from_object(Config)
-
-# 初始化数据库
-db = SQLAlchemy(app)
-# 初始化redis存储对象
-redis_store = StrictRedis(host=Config.REDIS_host, port=Config.REDIS_PORT)
-# 开启当前项目CSRF保护，只做服务器验证功能
-CSRFProtect(app)
-Session(app)
-
+# 通过指定的配置名字创建对应配置的app
+# 工厂方法
+app = create_app('development')
 manager = Manager(app)
 # 将app与db关联
 Migrate(app, db)
